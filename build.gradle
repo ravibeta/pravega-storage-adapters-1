@@ -161,6 +161,103 @@ project ('hdfs') {
     }
 }
 
+project('test:integration') {
+    apply plugin: 'application'
+    applicationName = "pravega-selftest"
+    mainClassName = "io.pravega.test.integration.selftest.SelfTestRunner"
+
+    applicationDefaultJvmArgs = ["-server", "-Xmx4g", "-XX:+HeapDumpOnOutOfMemoryError",
+                                 "-Dlog.dir=PRAVEGA_APP_HOME/logs",
+                                 "-Dlog.name=selftest"]
+
+    applicationDistribution.from('src/config') {
+        into "conf"
+    }
+
+    test {
+                jvmArgs = ["-server", "-Xmx2g", "-XX:+HeapDumpOnOutOfMemoryError",
+                                 "-Dlog.dir=PRAVEGA_APP_HOME/logs",
+                                 "-Dlog.name=selftest"]
+    }
+
+    dependencies {
+        project(":hdfs")
+        project(":extendeds3")
+        compile "io.pravega:pravega-common:${pravegaVersion}",
+                "io.pravega:pravega-shared-metrics:${pravegaVersion}",
+                "io.pravega:pravega-shared-protocol:${pravegaVersion}",
+                "io.pravega:pravega-segmentstore-contracts:${pravegaVersion}",
+                "io.pravega:pravega-segmentstore-storage:${pravegaVersion}",
+                "io.pravega:pravega-segmentstore-server:${pravegaVersion}",
+                "io.pravega:pravega-segmentstore-server-host:${pravegaVersion}",
+                "io.pravega:pravega-controller:${pravegaVersion}",
+                "io.pravega:pravega-client:${pravegaVersion}"
+        compile  "io.pravega:pravega-test-testcommon:${pravegaVersion}"
+        compile group: 'junit', name:'junit', version: junitVersion
+        compile group: 'org.apache.curator', name: 'curator-test', version: apacheCuratorVersion
+        testCompile group: 'ch.qos.logback', name: 'logback-classic', version: qosLogbackVersion
+        testCompile group: 'org.apache.commons', name: 'commons-csv', version: apacheCommonsCsvVersion
+        compile files("$rootDir/libs/pravega-client-0.9.0-2625.fd290ad-SNAPSHOT-tests.jar")
+    }
+
+
+    task startServer(type: JavaExec) {
+        main = "io.pravega.segmentstore.server.host.ServiceStarter"
+        classpath = sourceSets.main.runtimeClasspath
+        standardInput = System.in
+    }
+
+    task startBenchmark(type: JavaExec) {
+        main = "io.pravega.segmentstore.server.host.ServiceBenchmark"
+        classpath = sourceSets.main.runtimeClasspath
+        standardInput = System.in
+    }
+
+    task startLocalService(type: JavaExec) {
+        main = "io.pravega.test.integration.demo.StartLocalService"
+        classpath = sourceSets.main.runtimeClasspath
+        standardInput = System.in
+    }
+
+    task startWriter(type: JavaExec) {
+        main = "io.pravega.test.integration.demo.StartWriter"
+        classpath = sourceSets.main.runtimeClasspath
+        standardInput = System.in
+    }
+
+    task startReader(type: JavaExec) {
+        main = "io.pravega.test.integration.demo.StartReader"
+        classpath = sourceSets.main.runtimeClasspath
+        standardInput = System.in
+    }
+
+    task startController(type: JavaExec) {
+        main = "io.pravega.controller.server.Main"
+        classpath = sourceSets.main.runtimeClasspath
+        standardInput = System.in
+    }
+
+    task startScaleTest(type: JavaExec) {
+        main = "io.pravega.test.integration.demo.ScaleTest"
+        classpath = sourceSets.main.runtimeClasspath
+        standardInput = System.in
+    }
+
+
+    /**
+     * See: https://github.com/pravega/pravega/wiki/Interactive-Demo-Tool.
+     * This will only work well from the console if all Gradle output is suppressed: -q --console=plain
+     */
+    task startInteractiveDemo(type: JavaExec) {
+        main = "io.pravega.test.integration.demo.interactive.InteractiveDemo"
+        classpath = sourceSets.main.runtimeClasspath
+        standardInput = System.in
+        systemProperties System.getProperties()
+        systemProperties 'logback.configurationFile' : new File("${project.rootDir}/config/logback.xml")
+    }
+}
+
+
 def getProjectVersion() {
     String ver = pravegaVersion
     if (grgit && ver.contains("-SNAPSHOT")) {

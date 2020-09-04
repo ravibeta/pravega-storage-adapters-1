@@ -6,10 +6,12 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
  */
-rootProject.name = 'pravega-storage-adapters'
+package io.pravega.test.integration.selftest;
 
-include 'extendeds3',
-        'hdfs',
-        'test:integration'
+/**
+ * Defines a modification that the SelfTester can apply to a Target (Stream/Table).
+ */
+interface ProducerUpdate {
+    void release();
+}

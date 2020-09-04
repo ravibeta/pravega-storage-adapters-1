@@ -6,10 +6,15 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
  */
-rootProject.name = 'pravega-storage-adapters'
 
-include 'extendeds3',
-        'hdfs',
-        'test:integration'
+package io.pravega.test.integration.selftest;
+
+/**
+ * Defines various validation sources.
+ */
+enum ValidationSource {
+    TailRead,
+    CatchupRead,
+    StorageRead
+}

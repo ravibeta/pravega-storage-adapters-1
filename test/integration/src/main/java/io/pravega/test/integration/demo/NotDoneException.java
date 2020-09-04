@@ -6,10 +6,9 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
  */
-rootProject.name = 'pravega-storage-adapters'
+package io.pravega.test.integration.demo;
 
-include 'extendeds3',
-        'hdfs',
-        'test:integration'
+class NotDoneException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
+}
