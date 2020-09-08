@@ -115,7 +115,6 @@ public class KeyValueTableTest extends KeyValueTableTestBase {
     /**
      * Smoke Test. Verify that the KeyValueTable can be created and listed.
      */
-    @org.junit.Ignore
     @Test
     public void testCreateListKeyValueTable() {
         val kvt1 = newKeyValueTableName();

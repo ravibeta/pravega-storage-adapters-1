@@ -127,7 +127,6 @@ public class ControllerServiceTest {
     }
     
     
-    @org.junit.Ignore
     @Test(timeout = 40000)
     public void testControllerService() throws Exception {
         final String scope1 = "scope1";
