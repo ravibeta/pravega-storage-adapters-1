@@ -28,6 +28,7 @@ buildscript {
         classpath group: 'gradle.plugin.com.github.spotbugs', name: 'spotbugs-gradle-plugin', version: spotbugsPluginVersion
         classpath "org.ajoberstar:grgit:${gradleGitPluginVersion}"
         classpath "io.franzbecker:gradle-lombok:${gradleLombokPluginVersion}"
+        classpath fileTree(dir: "$rootDir/libs", include: "*.jar")
     }
 }
 
@@ -95,6 +96,9 @@ allprojects {
         maven {
             url "https://oss.jfrog.org/artifactory/oss-snapshot-local"
         }
+        flatDir {
+            dirs 'libs'
+        }
     }
 
     gradle.projectsEvaluated {
@@ -144,7 +148,7 @@ project ('hdfs') {
                 "io.pravega:pravega-segmentstore-contracts:${pravegaVersion}",
                 "io.pravega:pravega-segmentstore-storage:${pravegaVersion}"
         compile  "io.pravega:pravega-test-testcommon:${pravegaVersion}"
-                compile group:"io.pravega", name:"pravega-segmentstore-storage", version: pravegaVersion,  classifier: 'tests'
+        compile files("$rootDir/libs/pravega-segmentstore-storage-0.9.0-2641.ea37ccadc-issue-5124-use-maven-plugin-tests.jar")
         compile group: 'org.apache.hadoop', name: 'hadoop-common', version: hadoopVersion, withoutLogger
         compile group: 'org.apache.hadoop', name: 'hadoop-hdfs', version: hadoopVersion, withoutLogger
         compile group: 'org.apache.hadoop', name: 'hadoop-hdfs-client', version: hadoopVersion, withoutLogger
@@ -196,7 +200,14 @@ project('test:integration') {
         compile group: 'org.apache.curator', name: 'curator-test', version: apacheCuratorVersion
         testCompile group: 'ch.qos.logback', name: 'logback-classic', version: qosLogbackVersion
         testCompile group: 'org.apache.commons', name: 'commons-csv', version: apacheCommonsCsvVersion
-        compile group:"io.pravega", name:"pravega-client", version: pravegaVersion,  classifier: 'tests'
+        compile group: 'org.apache.hadoop', name: 'hadoop-common', version: hadoopVersion, withoutLogger
+        compile group: 'org.apache.hadoop', name: 'hadoop-hdfs', version: hadoopVersion, withoutLogger
+        compile group: 'org.apache.hadoop', name: 'hadoop-hdfs-client', version: hadoopVersion, withoutLogger
+        compile group: 'org.apache.hadoop', name: 'hadoop-minicluster', version: hadoopVersion, withoutLogger
+        compile group: 'io.netty', name: 'netty-codec-http', version: nettyVersion
+        compile files(project(':hdfs').sourceSets.test.output)
+        compile files("$rootDir/libs/pravega-segmentstore-server-host-0.9.0-2641.ea37ccadc-issue-5124-use-maven-plugin-tests.jar")
+        compile files("$rootDir/libs/pravega-segmentstore-server-0.9.0-2641.ea37ccadc-issue-5124-use-maven-plugin-tests.jar")
     }
 
 
