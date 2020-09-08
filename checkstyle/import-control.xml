@@ -25,5 +25,6 @@
     <allow pkg="javax.ws" />
     <allow pkg="io.grpc" />
     <allow pkg="com.fasterxml" />
+    <allow pkg="org.jclouds" />
 
 </import-control>
